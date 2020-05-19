@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=480" />
+<title>ディベート用タイマー</title>
+
+
+<style type="text/css">
+@import url(deb_timer.css);
+</style>
+
+<!-- audio.js comes from http://kolber.github.com/audiojs/ -->
+<script src="/audiojs/audio.min.js"></script>
+<script>
+  audiojs.events.ready(function() {
+    var as = audiojs.createAll();
+  });
+</script>
+</head>
+
+
+<body>
+
+<p class="top_space"></p>
+
+<table id="id_table" border="1" cellspacing="0" callpadding="0">
+<tr valign="middle">
+<td colspan="3" id="bg_disp_time" nowrap height="*%">
+  <div class="text_display_time_large" OnCLick="debate_timer.SwitchActiveTimer(-2)" OnDblClick="debate_timer.SetInitVal(-1, -1)">
+    <img src="7seg_0.png" class="image_digit" id="digit_min10">
+    <img src="7seg_0.png" class="image_digit" id="digit_min01">
+    <img src="7seg_colon.png" class="image_separator" id="digit_separator">
+    <img src="7seg_0.png" class="image_digit" id="digit_sec10">
+    <img src="7seg_0.png" class="image_digit" id="digit_sec01">
+  </div>
+  <div class="area_set_minutes">
+    <form name="format_select">
+      立論
+        <select name="minutes_const">
+        <option value="1">1分</option>
+        <option value="2">2分</option>
+        <option value="3">3分</option>
+        <option value="4">4分</option>
+        <option value="5">5分</option>
+        <option value="6">6分</option>
+        <option value="7">7分</option>
+        <option value="8">8分</option>
+        <option value="9">9分</option>
+        <option value="10">10分</option>
+        </select>
+      <br>
+      反駁
+        <select name="minutes_reb">
+        <option value="1">1分</option>
+        <option value="2">2分</option>
+        <option value="3">3分</option>
+        <option value="4">4分</option>
+        <option value="5">5分</option>
+        <option value="6">6分</option>
+        <option value="7">7分</option>
+        <option value="8">8分</option>
+        <option value="9">9分</option>
+        <option value="10">10分</option>
+        </select>
+      <br>
+      質疑
+        <select name="minutes_exam">
+        <option value="1">1分</option>
+        <option value="2">2分</option>
+        <option value="3">3分</option>
+        <option value="4">4分</option>
+        <option value="5">5分</option>
+        <option value="6">6分</option>
+        <option value="7">7分</option>
+        <option value="8">8分</option>
+        <option value="9">9分</option>
+        <option value="10">10分</option>
+        </select>
+      <br>
+      準備
+        <select name="minutes_prep">
+        <option value="1">1分</option>
+        <option value="2">2分</option>
+        <option value="3">3分</option>
+        <option value="4">4分</option>
+        <option value="5">5分</option>
+        <option value="6">6分</option>
+        <option value="7">7分</option>
+        <option value="8">8分</option>
+        <option value="9">9分</option>
+        <option value="10">10分</option>
+        </select>
+      <br>
+      [+][-]の量<br>
+        <select name="step_seconds">
+        <option value="1">1秒</option>
+        <option value="5">5秒</option>
+        <option value="10">10秒</option>
+        <option value="15">15秒</option>
+        <option value="30">30秒</option>
+        <option value="60">60秒</option>
+        </select>
+    </form>
+  </div>
+</td>
+</tr>
+
+<tr>
+<td height="12%" width="33.3%" id="bg_const" nowrap>立論:
+<input type="text" id="timer_const" class="text_display_time" readonly size="5" value="-:--">
+<br>
+<button type="button" class="button1" id="start_const" nowrap OnClick="debate_timer.SwitchActiveTimer(0)">-</button>
+<button type="button" class="button2"                  nowrap OnClick="debate_timer.SetInitVal(0, 0)">Init</button>
+<button type="button" class="button3"                  nowrap OnClick="debate_timer.ChangeVal(0, 0)">+</button>
+<button type="button" class="button3"                  nowrap OnClick="debate_timer.ChangeVal(0, 1)">-</button>
+</td>
+
+<td height="12%" width="33.3%" id="bg_exam" nowrap>質疑:
+<input type="text" id="timer_exam" class="text_display_time" readonly size="5" value="-:--">
+<br>
+<button type="button" class="button1" id="start_exam" nowrap OnClick="debate_timer.SwitchActiveTimer(1)">-</button>
+<button type="button" class="button2"                  nowrap OnClick="debate_timer.SetInitVal(1, 2)">Init</button>
+<button type="button" class="button3"                  nowrap OnClick="debate_timer.ChangeVal(1, 0)">+</button>
+<button type="button" class="button3"                  nowrap OnClick="debate_timer.ChangeVal(1, 1)">-</button>
+</td>
+
+<td height="12%" width="33.3%" id="bg_reb" nowrap>反駁:
+<input type="text" id="timer_reb" class="text_display_time" readonly size="5" value="-:--">
+<br>
+<button type="button" class="button1" id="start_reb" nowrap OnClick="debate_timer.SwitchActiveTimer(2)">-</button>
+<button type="button" class="button2"                  nowrap OnClick="debate_timer.SetInitVal(2, 1)">Init</button>
+<button type="button" class="button3"                  nowrap OnClick="debate_timer.ChangeVal(2, 0)">+</button>
+<button type="button" class="button3"                  nowrap OnClick="debate_timer.ChangeVal(2, 1)">-</button>
+</td>
+</tr>
+
+<tr>
+<td height="12%" width="33.3%" id="bg_aff" nowrap>肯定側準備:
+<input type="text" id="timer_aff" class="text_display_time" readonly size="5" value="-:--">
+<br>
+<button type="button" class="button1" id="start_aff" nowrap OnClick="debate_timer.SwitchActiveTimer(3)">-</button>
+<button type="button" class="button2"                  nowrap OnClick="debate_timer.SetInitVal(3, 3)">Init</button>
+<button type="button" class="button3"                  nowrap OnClick="debate_timer.ChangeVal(3, 0)">+</button>
+<button type="button" class="button3"                  nowrap OnClick="debate_timer.ChangeVal(3, 1)">-</button>
+</td>
+
+<td height="12%" width="33.3%" id="bg_neg" nowrap>否定側準備:
+<input type="text" id="timer_neg" class="text_display_time" readonly size="5" value="-:--">
+<br>
+<button type="button" class="button1" id="start_neg" nowrap OnClick="debate_timer.SwitchActiveTimer(4)">-</button>
+<button type="button" class="button2"                  nowrap OnClick="debate_timer.SetInitVal(4, 3)">Init</button>
+<button type="button" class="button3"                  nowrap OnClick="debate_timer.ChangeVal(4, 0)">+</button>
+<button type="button" class="button3"                  nowrap OnClick="debate_timer.ChangeVal(4, 1)">-</button>
+</td>
+
+<td height="12%" width="33.3%" id="bg_now" nowrap>時刻:
+<input type="text" id="timer_now" class="text_display_time" readonly size="8" value="--:--:--">
+<br>
+<input type="text" name="timer_const" value="メモ" class="memo" size=14>
+
+
+</td>
+</tr>
+</table>
+
+
+<p>
+<button type="button" class="button4" id="btn_initialize" OnClick="debate_timer.InitializeAll()">全初期化</button>
+<!--<button type="button" class="button5" id="btn_fitscreen" OnClick="debate_timer.FitScreen()"></button>-->
+</p>
+
+
+<p>
+<!-- 音を鳴らすためのタグ -->
+<audio id="play_sound" preload="auto" src="timeup.mp3" type="audio/mp3" controls>
+</audio>
+</p>
+
+
+<script src="deb_timer.js"></script>
+
+
+</body>
+</html>
